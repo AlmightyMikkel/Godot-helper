@@ -22,16 +22,16 @@ Finally, we just need to add an api key and game_version.
 
 game_version is a semantic versioning, meaning it should look like 0.0.1
 
-Find the api key [here](https://console.lootlocker.com/settings/api-keys)
-Be sure to use the GAME API
+Find the api key [here](https://console.lootlocker.com/settings/api-keys) be sure to use the GAME API
 ![image](https://github.com/user-attachments/assets/14b2c319-802c-45ca-8093-f0094c531491)
 If its empty, just create a new and copy it and paste it into the `LootLockerAPI.gd` script
+
 This is where the information goes:
 ![image](https://github.com/user-attachments/assets/cb3f721a-61d2-48c6-9237-1241bb7838c8)
 
 
 # Features
-Currently this offers the following features from [LootLocker](https://lootlocker.com/features)
+Currently I have supported the following features from [LootLocker](https://lootlocker.com/features)
 ## Guest Session
 Currently this is the only authentication method I have implemented as of yet.
 ```gdscript
@@ -67,4 +67,4 @@ var getLeaderboard : LootLockerGetLeaderboard = await LootLockerAPI._ListLeaderb
 
 # Support 
 
-Contact me directly through Discord at `AlmigthyMikkel`
+You can contact me directly through Discord at `AlmigthyMikkel`
