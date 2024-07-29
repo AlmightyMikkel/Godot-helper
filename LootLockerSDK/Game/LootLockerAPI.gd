@@ -6,18 +6,32 @@ var httpRequest = HTTPClient.new()
 @export var coreurl : String = "https://api.lootlocker.io"
 
 var headers = [
-	"Content-Type: application/json"
+	"Content-Type: application/json",
+	"LL-Version: 2021-03-01"
 ]
-var apiKey = "KEY HERE"
-var gameVersion = "VERSION HERE"
+
+var apiKey = "dev_0e36be4fb03f4ad091b2c0a379b3250d"
+var gameVersion = "0.0.1"
+
+var sessionAssigned = false
+
+func _hasSession() -> bool:
+	var token =  LootLockerConfig.get_data("session-token", "")
+	if token == "":
+		print("No x-session-token available")
+		return false
+	if not sessionAssigned:
+		headers.append("x-session-token: " + token)
+		sessionAssigned = true
+	return true
 
 func _guestLogin() -> GuestSession:
 	
+	if not _hasSession():
+		return null
+	
 	var endpoint = "/game/v2/session/guest"
-	
-	headers.append("LL-Version: 2021-03-01")
-	headers.append("Content-Type: application/json")
-	
+
 	var body = ""
 	
 	var player_identifier = LootLockerConfig.get_data("player-identifier", "")
@@ -28,23 +42,23 @@ func _guestLogin() -> GuestSession:
 
 	err = httpRequest.connect_to_host(coreurl)
 
-	assert(err == OK)
+	assert(err == OK, "error is " + str(err))
 	
 	while httpRequest.get_status() == HTTPClient.STATUS_CONNECTING or httpRequest.get_status() == HTTPClient.STATUS_RESOLVING:
 		httpRequest.poll()
 		await get_tree().process_frame
 	
-	
 	assert(httpRequest.get_status() == HTTPClient.STATUS_CONNECTED)
 	
 	err = httpRequest.request(HTTPClient.METHOD_POST, endpoint, headers, body)
 
-	assert(err == OK)
+	assert(err == OK, "error is " + str(err))
 	
 	while httpRequest.get_status() == HTTPClient.STATUS_REQUESTING:
 		httpRequest.poll()
 		await get_tree().process_frame
-		
+	
+	print("Status: " + str(httpRequest.get_status()))
 	assert(httpRequest.get_status() == HTTPClient.STATUS_BODY or httpRequest.get_status() == HTTPClient.STATUS_CONNECTED)
 	
 	
@@ -67,15 +81,15 @@ func _guestLogin() -> GuestSession:
 
 func _setPlayerName(newname) -> PlayerName:
 	
+	if not _hasSession():
+		return null
 	var endpoint = "/game/player/name"
-	headers.append("LL-Version: 2021-03-01")
 	
 	var token =  LootLockerConfig.get_data("session-token", "")
 	if token == "":
 		print("No x-session-token provided")
 		return
 
-	headers.append("x-session-token: " + token)
 	var body = "{\"name\": \"" + newname + "\"}"
 
 	err = httpRequest.connect_to_host(coreurl)
@@ -118,15 +132,16 @@ func _setPlayerName(newname) -> PlayerName:
 
 func _getPlayerName() -> PlayerName:
 	
+	if not _hasSession():
+		return null
+		
 	var endpoint = "/game/player/name"
-	headers.append("LL-Version: 2021-03-01")
 	
 	var token =  LootLockerConfig.get_data("session-token", "")
 	if token == "":
 		print("No x-session-token provided")
 		return
 
-	headers.append("x-session-token: " + token)
 	
 	err = httpRequest.connect_to_host(coreurl)
 
@@ -168,16 +183,12 @@ func _getPlayerName() -> PlayerName:
 
 
 func _SubmitScore(leaderboard_key, member_id, score, metadata) -> LootLockerLeaderboardSubmit:
+	
+	if not _hasSession():
+		return null
+		
 	var endpoint = "/game/leaderboards/" + leaderboard_key + "/submit"
 	print("Endpoint: " + endpoint)
-	var token =  LootLockerConfig.get_data("session-token", "")
-	if token == "":
-		print("No x-session-token provided")
-		return
-
-	headers.append("x-session-token: " + token)
-	headers.append("LL-Version: 2021-03-01")
-	headers.append("Content-Type: application/json")
 	
 	var body
 	
@@ -207,8 +218,7 @@ func _SubmitScore(leaderboard_key, member_id, score, metadata) -> LootLockerLead
 		await get_tree().process_frame
 		
 	assert(httpRequest.get_status() == HTTPClient.STATUS_BODY or httpRequest.get_status() == HTTPClient.STATUS_CONNECTED)
-	
-	
+
 	if(httpRequest.has_response()):
 		var rb = PackedByteArray()
 
@@ -225,17 +235,13 @@ func _SubmitScore(leaderboard_key, member_id, score, metadata) -> LootLockerLead
 	return null
 
 func _ListLeaderboard(leaderboard_key) -> LootLockerGetLeaderboard:
+	
+	if not _hasSession():
+		return null
+		
 	var endpoint = "/game/leaderboards/" + leaderboard_key + "/list"
 	print("Endpoint: " + endpoint)
-	var token =  LootLockerConfig.get_data("session-token", "")
-	if token == "":
-		print("No x-session-token provided")
-		return
-
-	headers.append("x-session-token: " + token)
-	headers.append("LL-Version: 2021-03-01")
-	headers.append("Content-Type: application/json")
-	
+		
 	var body = ""
 	
 	err = httpRequest.connect_to_host(coreurl)
