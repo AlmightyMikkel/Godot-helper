@@ -10,8 +10,8 @@ var headers = [
 	"LL-Version: 2021-03-01"
 ]
 
-var apiKey = "dev_0e36be4fb03f4ad091b2c0a379b3250d"
-var gameVersion = "0.0.1"
+var apiKey = "API Key here"
+var gameVersion = "Version here"
 
 var sessionAssigned = false
 
