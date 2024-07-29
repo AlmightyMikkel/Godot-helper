@@ -13,7 +13,7 @@ var gameVersion = "VERSION HERE"
 
 func _guestLogin() -> GuestSession:
 	
-	var endpoint = coreurl + "/game/v2/session/guest"
+	var endpoint = "/game/v2/session/guest"
 	
 	headers.append("LL-Version: 2021-03-01")
 	headers.append("Content-Type: application/json")
@@ -67,7 +67,7 @@ func _guestLogin() -> GuestSession:
 
 func _setPlayerName(newname) -> PlayerName:
 	
-	var endpoint = coreurl + "/game/player/name"
+	var endpoint = "/game/player/name"
 	headers.append("LL-Version: 2021-03-01")
 	
 	var token =  LootLockerConfig.get_data("session-token", "")
@@ -118,7 +118,7 @@ func _setPlayerName(newname) -> PlayerName:
 
 func _getPlayerName() -> PlayerName:
 	
-	var endpoint = coreurl + "/game/player/name"
+	var endpoint = "/game/player/name"
 	headers.append("LL-Version: 2021-03-01")
 	
 	var token =  LootLockerConfig.get_data("session-token", "")
@@ -168,7 +168,7 @@ func _getPlayerName() -> PlayerName:
 
 
 func _SubmitScore(leaderboard_key, member_id, score, metadata) -> LootLockerLeaderboardSubmit:
-	var endpoint = coreurl + "/game/leaderboards/" + leaderboard_key + "/submit"
+	var endpoint = "/game/leaderboards/" + leaderboard_key + "/submit"
 	print("Endpoint: " + endpoint)
 	var token =  LootLockerConfig.get_data("session-token", "")
 	if token == "":
@@ -225,7 +225,7 @@ func _SubmitScore(leaderboard_key, member_id, score, metadata) -> LootLockerLead
 	return null
 
 func _ListLeaderboard(leaderboard_key) -> LootLockerGetLeaderboard:
-	var endpoint = coreurl + "/game/leaderboards/" + leaderboard_key + "/list"
+	var endpoint = "/game/leaderboards/" + leaderboard_key + "/list"
 	print("Endpoint: " + endpoint)
 	var token =  LootLockerConfig.get_data("session-token", "")
 	if token == "":
